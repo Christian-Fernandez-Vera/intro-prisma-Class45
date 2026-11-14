@@ -9,12 +9,38 @@ datasource db {
 
 // Models (tabelle DB)
 model Product {
-  id Int @id @default(autoincrement())
-  name String
-  description String? @db.Text
-  price Decimal @db.Decimal(8, 2)
-  quantity Int? @default(0)
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(8, 2)
+  quantity    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // RELAZIONE
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int // FK
+  tags        Tag[]
+}
+
+// Relazion 1 - N
+// Una categoria puo avere + prodotti
+// Un prodotto ha una sola categoria
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // RELAZIONE
+  products  Product[]
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(50)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // RELAZIONE
+  products  Product[]
 }
