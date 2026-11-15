@@ -20,7 +20,7 @@ model Product {
   // RELAZIONE
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  Int // FK
-  tags        Tag[]
+  // tags        Tag[]
 }
 
 // Relazion 1 - N
@@ -36,11 +36,11 @@ model Category {
   products  Product[]
 }
 
-model Tag {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique @db.VarChar(50)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  // RELAZIONE
-  products  Product[]
-}
+// model Tag {
+//   id        Int       @id @default(autoincrement())
+//   name      String    @unique @db.VarChar(50)
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   // RELAZIONE
+//   products  Product[]
+// }
