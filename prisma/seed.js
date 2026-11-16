@@ -1,16 +1,13 @@
-import "dotenv/config";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "../generated/prisma/index.js";
+import prisma from "../lib/prisma.js";
 
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
-const prisma = new PrismaClient({
-  adapter: adapter,
-});
+
+const randArrayIndex = (length) => Math.floor(Math.random() * length)
 
 async function main() {
   console.log("Seeding started");
 
   // Remove previous data
+  await prisma.product.deleteMany();
   await prisma.category.deleteMany();
 
   // GEN 3 categorie
@@ -36,6 +33,23 @@ async function main() {
   // SELECT * FROM category
   const categories = await prisma.category.findMany();
   console.log(categories);
+
+  // GEN dei prodotti
+  // preparazione dell'array prodotti
+  const products = [];
+  for (let index = 0; index <10; index++){
+    products.push({
+      name: `Product ${index + 1}`,
+      price: 12.99,
+      description: `Description fro product ${index + 1}`,
+      quantity:10,
+      categoryId: categories[randArrayIndex(categories.length)].id,
+    })
+  }
+  // inviare la query al db per l'inserimento
+  await prisma.product.createMany({
+    data: products
+  })
 }
 
 main()
