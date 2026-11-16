@@ -1,4 +1,5 @@
 import express from "express";
+// import prisma from "../lib/prisma.js";
 
 const router = express.Router();
 
@@ -6,6 +7,8 @@ const router = express.Router();
 
 //INDEX
 router.get("/", (req, res) => {
+  console.log(lorem);
+  
   res.send("List of products");
 });
 

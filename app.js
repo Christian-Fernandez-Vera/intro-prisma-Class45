@@ -1,5 +1,7 @@
 import express from "express";
 import productsRouter from './routers/products.js'
+import errorsHandler from "./middlewares/errorsHandler.js";
+import notFound from "./middlewares/notFound.js";
 
 //setup
 const app = express();
@@ -12,6 +14,10 @@ app.get('/', (req,res) => {
 
 // CRUD for products
 app.use('/products', productsRouter);
+
+app.use(errorsHandler);
+
+app.use(notFound);
 
 //Server Start
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`),
