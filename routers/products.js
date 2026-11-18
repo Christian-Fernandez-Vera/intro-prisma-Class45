@@ -50,6 +50,16 @@ router.get('/:id', async (req, res, next) => {
     },
     include: {
       category: true,
+
+      // category: {
+      //   select: {
+      //     id: true,
+      //     name: true,
+      //   },
+      // },
+    },
+    omit: {
+      categoryId: true
     }
   });
   if (!product) {
