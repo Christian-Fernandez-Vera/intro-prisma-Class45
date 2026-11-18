@@ -26,7 +26,6 @@ router.get("/", async (req, res) => {
 });
 
 //SHOW - detail of a specific resource (id)
-
 router.get('/:id', async (req, res, next) => {
   try {
   const id = Number(req.params.id);
@@ -74,5 +73,12 @@ router.get('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+// STORE - Creazione di un nuovo prodotto
+router.post('/', (req, res) => {
+  const body = req.body
+  console.log(body);
+  
+})
 
 export default router;

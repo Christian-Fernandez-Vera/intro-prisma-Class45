@@ -7,6 +7,8 @@ import notFound from "./middlewares/notFound.js";
 const app = express();
 const port = 3000;
 
+app.use(express.json()); // Middleware necessario per legger il body in formato JSON (POST e PUT)
+
 //Routing
 app.get('/', (req,res) => {
   res.send('This is the shop API homepage');
