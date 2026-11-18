@@ -31,11 +31,26 @@ router.get('/:id', async (req, res, next) => {
   try {
   const id = Number(req.params.id);
   // console.log(id, typeof id);
+
+  // Validazione sul formato dell'id
+  // id deve esse un numero intero
+  // isInteger() -> NaN, '', 1.5
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({
+      status: 400,
+      error: "Bad request",
+      message: "ID must be an integer",
+    });
+  }
+
   // SELECT * FROM product WHERE id = id 
   const product = await prisma.product.findUnique({
     where: {
       id,
     },
+    include: {
+      category: true,
+    }
   });
   if (!product) {
     return res.status (404).json ({
