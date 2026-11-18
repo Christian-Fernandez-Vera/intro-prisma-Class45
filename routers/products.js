@@ -5,16 +5,49 @@ const router = express.Router();
 
 //BASE URL /products
 
-//INDEX
-router.get("/", async(req, res) => {
-  // SELECT * FROM product
-  const products = await prisma.product.findMany()
+//INDEX - List of products
+router.get("/", async (req, res) => {
+  const limit = req.query.limit;
+  console.log(limit, typeof limit);
+
+  // SELECT * FROM product LIMIT 2
+  const products = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      price: true,
+    },
+    take: limit ? Number(limit) : undefined,
+  });
   res.json(products);
 
   // console.log(lorem);
   // res.send("List of products");
 });
 
-//SHOW
+//SHOW - detail of a specific resource (id)
+
+router.get('/:id', async (req, res, next) => {
+  try {
+  const id = Number(req.params.id);
+  // console.log(id, typeof id);
+  // SELECT * FROM product WHERE id = id 
+  const product = await prisma.product.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!product) {
+    return res.status (404).json ({
+      status: 404,
+      error: "Product not found",
+      message: `No product found with ID ${id}`,
+    });
+  }
+  res.json(product);
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;
