@@ -75,10 +75,26 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // STORE - Creazione di un nuovo prodotto
-router.post('/', (req, res) => {
-  const body = req.body
-  console.log(body);
+router.post('/', async (req, res) => {
+  const { name, description, price, quantity, isActive, categoryId } = req.body
+  // console.log(body);
+
+  const newProduct = await prisma.product.create({
+    data: {
+      name,
+      description,
+      price,
+      quantity,
+      isActive,
+      categoryId,
+    },
+
+  select: {
+    id: true,
+    },
+  });
+  res.status(201).json(newProduct);
   
-})
+});
 
 export default router;
