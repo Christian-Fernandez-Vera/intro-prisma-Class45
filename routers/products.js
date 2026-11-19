@@ -1,6 +1,6 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
-import { index } from "../controllers/productController.js";
+import { index, show } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -8,60 +8,11 @@ const router = express.Router();
 
 //INDEX - List of products
 router.get("/", index);
-
-
-  // console.log(lorem);
-  // res.send("List of products");
-
+// console.log(lorem);
+// res.send("List of products");
 
 //SHOW - detail of a specific resource (id)
-router.get("/:id", async (req, res, next) => {
-  try {
-    const id = Number(req.params.id);
-    // console.log(id, typeof id);
-
-    // Validazione sul formato dell'id
-    // id deve esse un numero intero
-    // isInteger() -> NaN, '', 1.5
-    if (!Number.isInteger(id)) {
-      return res.status(400).json({
-        status: 400,
-        error: "Bad request",
-        message: "ID must be an integer",
-      });
-    }
-
-    // SELECT * FROM product WHERE id = id
-    const product = await prisma.product.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        category: true,
-
-        // category: {
-        //   select: {
-        //     id: true,
-        //     name: true,
-        //   },
-        // },
-      },
-      omit: {
-        categoryId: true,
-      },
-    });
-    if (!product) {
-      return res.status(404).json({
-        status: 404,
-        error: "Product not found",
-        message: `No product found with ID ${id}`,
-      });
-    }
-    res.json(product);
-  } catch (err) {
-    next(err);
-  }
-});
+router.get("/:id", show);
 
 // STORE - Creazione di un nuovo prodotto
 router.post("/", async (req, res) => {
@@ -99,7 +50,7 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE = Modifica di un prodotto
-router.patch('/:id', async(req, res) => {
+router.patch("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   // Validazione formatto id
@@ -108,18 +59,18 @@ router.patch('/:id', async(req, res) => {
   // Validazione se il prodotto esiste
 
   // Validazione se la categoria esiste
-  if(categoryId !== undefined){
+  if (categoryId !== undefined) {
     const category = await prisma.category.findUnique({
-      where:{
+      where: {
         id: categoryId,
       },
     });
-    if(!categoryId){
+    if (!categoryId) {
       return res.status(400).json({
-        error: 'Invalid category id',
+        error: "Invalid category id",
       });
-    };
-  };
+    }
+  }
 
   const updateProduct = await prisma.product.update({
     where: {
@@ -158,11 +109,11 @@ router.delete("/:id", async (req, res) => {
     },
   });
   // if prodotto esistente?
-  if(!product) {
+  if (!product) {
     return res.status(404).json({
-      error: 'Product Not Found'
+      error: "Product Not Found",
     });
-  };
+  }
 
   // Query al DB
   await prisma.product.delete({
@@ -170,10 +121,9 @@ router.delete("/:id", async (req, res) => {
       id,
     },
   });
-  
+
   res.sendStatus(204);
   // res.json(deleteProduct);
-
 });
 
 export default router;

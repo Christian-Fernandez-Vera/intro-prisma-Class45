@@ -17,7 +17,53 @@ export async function index(req, res) {
   });
   res.json(products);
 };
-export function show(req, res) {}
-export function store(req, res) {}
-export function update(req, res) {}
-export function destroy(req, res) {}
+export async function show(req, res) {
+  try {
+    const id = Number(req.params.id);
+    // console.log(id, typeof id);
+
+    // Validazione sul formato dell'id
+    // id deve esse un numero intero
+    // isInteger() -> NaN, '', 1.5
+    if (!Number.isInteger(id)) {
+      return res.status(400).json({
+        status: 400,
+        error: "Bad request",
+        message: "ID must be an integer",
+      });
+    }
+
+    // SELECT * FROM product WHERE id = id
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        category: true,
+
+        // category: {
+        //   select: {
+        //     id: true,
+        //     name: true,
+        //   },
+        // },
+      },
+      omit: {
+        categoryId: true,
+      },
+    });
+    if (!product) {
+      return res.status(404).json({
+        status: 404,
+        error: "Product not found",
+        message: `No product found with ID ${id}`,
+      });
+    }
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+};
+export async function store(req, res) {}
+export async function update(req, res) {}
+export async function destroy(req, res) {}
