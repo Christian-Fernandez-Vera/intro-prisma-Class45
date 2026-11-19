@@ -109,6 +109,47 @@ router.post("/", async (req, res) => {
   res.status(201).json(newProduct);
 });
 
+// UPDATE = Modifica di un prodotto
+router.patch('/:id', async(req, res) => {
+  const id = Number(req.params.id);
+
+  // Validazione formatto id
+  const { name, description, price, quantity, isActive, categoryId } = req.body;
+
+  // Validazione se il prodotto esiste
+
+  // Validazione se la categoria esiste
+  if(categoryId !== undefined){
+    const category = await prisma.category.findUnique({
+      where:{
+        id: categoryId,
+      },
+    });
+    if(!categoryId){
+      return res.status(400).json({
+        error: 'Invalid category id',
+      });
+    };
+  };
+
+  const updateProduct = await prisma.product.update({
+    where: {
+      id,
+    },
+    data: {
+      name,
+      description,
+      price,
+      quantity,
+      isActive,
+      categoryId,
+    },
+  });
+
+  res.json(updateProduct);
+});
+
+// DESTROY = Cancellare un prodotto
 router.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
@@ -140,8 +181,10 @@ router.delete("/:id", async (req, res) => {
       id,
     },
   });
-
+  
   res.sendStatus(204);
+  // res.json(deleteProduct);
+
 });
 
 export default router;
