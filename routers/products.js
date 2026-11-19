@@ -1,29 +1,18 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
+import { index } from "../controllers/productController.js";
 
 const router = express.Router();
 
 //BASE URL /products
 
 //INDEX - List of products
-router.get("/", async (req, res) => {
-  const limit = req.query.limit;
-  console.log(limit, typeof limit);
+router.get("/", index);
 
-  // SELECT * FROM product LIMIT 2
-  const products = await prisma.product.findMany({
-    select: {
-      id: true,
-      name: true,
-      price: true,
-    },
-    take: limit ? Number(limit) : undefined,
-  });
-  res.json(products);
 
   // console.log(lorem);
   // res.send("List of products");
-});
+
 
 //SHOW - detail of a specific resource (id)
 router.get("/:id", async (req, res, next) => {
