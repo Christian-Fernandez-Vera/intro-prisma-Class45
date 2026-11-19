@@ -79,6 +79,19 @@ router.post('/', async (req, res) => {
   const { name, description, price, quantity, isActive, categoryId } = req.body
   // console.log(body);
 
+  // verifica id categori esistente
+  const category = await prisma.category.findUnique({
+    where: {
+      id: categoryId
+    }
+  });
+  if(!category){
+    return res.status(400).json({
+      error: 'Category id not valid'
+    });
+  }
+
+
   const newProduct = await prisma.product.create({
     data: {
       name,
