@@ -64,6 +64,38 @@ export async function show(req, res) {
     next(err);
   }
 };
-export async function store(req, res) {}
+export async function store(req, res) {
+    const { name, description, price, quantity, isActive, categoryId } = req.body;
+  // console.log(body);
+
+  // verifica id categori esistente
+  const category = await prisma.category.findUnique({
+    where: {
+      id: categoryId,
+    },
+  });
+  if (!category) {
+    return res.status(400).json({
+      error: "Category id not valid",
+    });
+  }
+
+  // INSERT INTO product (name, description, price, quantity, isActive, categoryId) VALUES ()
+  const newProduct = await prisma.product.create({
+    data: {
+      name,
+      description,
+      price,
+      quantity,
+      isActive,
+      categoryId,
+    },
+
+    select: {
+      id: true,
+    },
+  });
+  res.status(201).json(newProduct);
+}
 export async function update(req, res) {}
 export async function destroy(req, res) {}

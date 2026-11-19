@@ -1,6 +1,6 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
-import { index, show } from "../controllers/productController.js";
+import { index, show, store } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -15,39 +15,7 @@ router.get("/", index);
 router.get("/:id", show);
 
 // STORE - Creazione di un nuovo prodotto
-router.post("/", async (req, res) => {
-  const { name, description, price, quantity, isActive, categoryId } = req.body;
-  // console.log(body);
-
-  // verifica id categori esistente
-  const category = await prisma.category.findUnique({
-    where: {
-      id: categoryId,
-    },
-  });
-  if (!category) {
-    return res.status(400).json({
-      error: "Category id not valid",
-    });
-  }
-
-  // INSERT INTO product (name, description, price, quantity, isActive, categoryId) VALUES ()
-  const newProduct = await prisma.product.create({
-    data: {
-      name,
-      description,
-      price,
-      quantity,
-      isActive,
-      categoryId,
-    },
-
-    select: {
-      id: true,
-    },
-  });
-  res.status(201).json(newProduct);
-});
+router.post("/", store);
 
 // UPDATE = Modifica di un prodotto
 router.patch("/:id", async (req, res) => {
